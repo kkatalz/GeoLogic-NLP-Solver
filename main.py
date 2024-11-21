@@ -5,12 +5,12 @@ from semantic_analyzer import SemanticAnalyzer
 
 def main():
     # Input text
-    raw_text = "У правильному трикутнику сторона дорівнює 4. Знайдіть периметр і площу трикутника."
+    raw_text = "У правильному трикутнику сторона дорівнює 4 см. Знайдіть периметр і площу трикутника."
+    print(f"Task: {raw_text}")
 
     # Step 1: Preprocess
     preprocessor = Preprocessor()
     normalized_text = preprocessor.normalize_text(raw_text)
-    print(f"Normalized Text: {normalized_text}")
 
     # Step 2: Analyze with UDPipe
     udpipe = UDPipeAnalyzer()
