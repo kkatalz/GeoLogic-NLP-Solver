@@ -5,7 +5,7 @@ from semantic_analyzer import SemanticAnalyzer
 
 def main():
     # Input text
-    raw_text = " У правильному трикутнику сторона дорівнює 4. Знайдіть периметр і площу трикутника."
+    raw_text = "У правильному трикутнику сторона дорівнює 4. Знайдіть периметр і площу трикутника."
 
     # Step 1: Preprocess
     preprocessor = Preprocessor()
@@ -22,11 +22,11 @@ def main():
 
     # Step 3: Semantic Analysis
     analyzer = SemanticAnalyzer(udpipe_result)
-    task = analyzer.extract_task()
-    print(f"Task to Solve: {task}")
+    tasks = analyzer.extract_task(udpipe_result)
+    print(f"Task to Solve: {tasks}")
 
     # Step 4: Resolve Task
-    result = analyzer.calculate(task, elements)
+    result = analyzer.calculate(tasks, elements)
 
     # Step 5: Output
     if result:
