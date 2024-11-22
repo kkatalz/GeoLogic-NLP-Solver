@@ -4,37 +4,35 @@ from semantic_analyzer import SemanticAnalyzer
 
 
 def main():
-    # Input text
-    raw_text = "У рівностороннього трикутника периметр дорівнює 1,5 м. Знайдіть висоту трикутника"
+    test_cases = [
+        "Знайдіть кути рівностороннього трикутника.",
+        "У правильному трикутнику сторона дорівнює 4. Знайдіть периметр і площу трикутника.",
+        "У рівностороннього трикутника периметр дорівнює 1,5 м. Знайдіть висоту трикутника",
+        "У правильному трикутнику сторона дорівнює 6см. Знайдіть довжину медіани, висоти, бісектриси."
+    ]
 
-    print(f"Task: {raw_text}")
-
-    # Step 1: Preprocess
     preprocessor = Preprocessor()
-    normalized_text = preprocessor.normalize_text(raw_text)
-    print(f"Normalized Text: {normalized_text}")
-
-    # Step 2: Analyze with UDPipe
     udpipe = UDPipeAnalyzer()
-    udpipe_result = udpipe.analyze_text(normalized_text)
-    print(f"UDPipe Result: {udpipe_result}")
 
-    elements = preprocessor.extract_elements(udpipe_result)
-    print(f"Extracted Elements (raw): {elements}")
+    for i, raw_text in enumerate(test_cases, 1):
+        print(f"\nTest Case {i}:")
+        print(f"Task: {raw_text}")
 
-    # Step 3: Semantic Analysis
-    analyzer = SemanticAnalyzer(udpipe_result)
-    tasks = analyzer.extract_task(udpipe_result)
-    print(f"Task to Solve: {tasks}")
+        normalized_text = preprocessor.normalize_text(raw_text)
+        print(f"Normalized Text: {normalized_text}")
 
-    # Step 4: Resolve Task
-    result = analyzer.calculate(tasks, elements)
+        udpipe_result = udpipe.analyze_text(normalized_text)
+        print(f"UDPipe Result: {udpipe_result}")
 
-    # Step 5: Output
-    if result:
-        print(f"The solution to your task is: {result}")
-    else:
-        print("Could not determine the task or calculate the result.")
+        elements = preprocessor.extract_elements(udpipe_result)
+        print(f"Extracted Elements: {elements}")
+
+        analyzer = SemanticAnalyzer(udpipe_result)
+        tasks = analyzer.extract_task(udpipe_result)
+        print(f"Tasks to Solve: {tasks}")
+
+        results = analyzer.calculate(tasks, elements)
+        print(f"Results: {results}")
 
 
 if __name__ == "__main__":
