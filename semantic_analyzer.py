@@ -18,17 +18,30 @@ class SemanticAnalyzer:
 
         return task
 
-    def calculate(self, tasks, elements):
+    def find_side(self, elements):
+        if "периметр" in elements:
+            perimeter = float(elements["периметр"])
+            return round(perimeter / 3, 2)
+        elif "площа" in elements:
+            area = float(elements["площа"])
+            return round(pow((area * 4) / pow(3, 0.5), 0.5), 2)
 
+    def calculate(self, tasks, elements):
+        side_given = "сторона" in elements
         results = []
+
+        # Find the side if not already given
+        side = float(elements.get("сторона", 0)
+                     ) if side_given else self.find_side(elements)
+        if side is None:
+            return ["Cannot compute as side length is missing."]
+
         for task in tasks:
             if task == "площа":
-                side = float(elements.get("сторона", 0))
                 result = round((pow(side, 2) * pow(3, 0.5)) / 4, 2)
                 results.append(f"{task}: {result}")
 
             elif task == "периметр":
-                side = float(elements.get("сторона", 0))
                 result = round(side * 3, 2)
                 results.append(f"{task}: {result}")
 
@@ -39,8 +52,7 @@ class SemanticAnalyzer:
                 results.append(f"{task}: 180")
 
             elif task in ["висота", "бісектриса", "медіана"]:
-                side = float(elements.get("сторона", 0))
-                result = round((pow(3, 2) * side) / 2, 2)
+                result = round((pow(3, 0.5) * side) / 2, 2)
                 results.append(f"{task}: {result}")
 
         return results if results else ["No valid tasks found."]
