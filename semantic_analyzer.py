@@ -5,7 +5,7 @@ class SemanticAnalyzer:
 
     def extract_task(self, udpipe_result):
         find_list = ["периметр", "площа", "кут",
-                     "висота", "бісектриса", "медіана", "сторона"]
+                     "висота", "бісектриса", "бісектрис", "медіана", "сторона"]
         task = []
         start_checking = False
 
@@ -51,7 +51,7 @@ class SemanticAnalyzer:
             elif task == "angles":
                 results.append(f"{task}: 180")
 
-            elif task in ["висота", "бісектриса", "медіана"]:
+            elif task in ["висота", "бісектриса", "бісектрис", "медіана"]:
                 result = round((pow(3, 0.5) * side) / 2, 2)
                 results.append(f"{task}: {result}")
 
