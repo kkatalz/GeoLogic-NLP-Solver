@@ -30,9 +30,16 @@ class Preprocessor:
                         break
 
                 value_tokens = []
-                # Collect all tokens that form the value (e.g., numbers and symbols like √)
-                if tokens[i+1].isalnum() or tokens[i+1] in "√":
-                    value_tokens.append(tokens[i+1])
+                decimal_found = False
+
+                for j in range(i + 1, len(tokens)):
+                    if tokens[j].isdigit():
+                        value_tokens.append(tokens[j])
+                    elif tokens[j] == "." and not decimal_found:
+                        value_tokens.append(tokens[j])
+                        decimal_found = True
+                    else:
+                        break
 
                 if key and value_tokens:
                     # Combine tokens into a single value
