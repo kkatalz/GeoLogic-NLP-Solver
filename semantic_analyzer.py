@@ -4,24 +4,26 @@ class SemanticAnalyzer:
         self.result = udpipe_result
 
     def extract_task(self, udpipe_result):
-        find_list = ["периметр", "площа", "кут",
-                     "висота", "бісектриса", "бісектрис", "медіана", "сторона", "радіус", "середня"]
+        find_list = ["периметр", "площа", "кут", "висота",
+                     "бісектриса", "медіана", "сторона", "радіус", "середній"]
         task = []
         start_checking = False
 
         for i, word in enumerate(udpipe_result):
             if word == "знайти":
-                start_checking = True  # Start checking words after this
+                start_checking = True
                 continue
-            # Ensure no index out of range
-            elif word == "радіус" and i + 2 < len(udpipe_result):
-                task.append(
-                    f"{word} {udpipe_result[i+1]} {udpipe_result[i+2]}")
-            elif word == "середня" and i + 2 < len(udpipe_result):
-                task.append(
-                    f"{word} {udpipe_result[i+1]}")
-            elif start_checking and word in find_list:
-                task.append(word)
+
+            if start_checking:
+                # Check bounds
+                if word == "радіус" and i + 2 < len(udpipe_result):
+                    task.append(
+                        f"{word} {udpipe_result[i+1]} {udpipe_result[i+2]}")
+                # Check bounds
+                elif word == "середній" and i + 1 < len(udpipe_result):
+                    task.append(f"{word} {udpipe_result[i+1]}")
+                elif word in find_list:
+                    task.append(word)
 
         return task
 
@@ -44,6 +46,12 @@ class SemanticAnalyzer:
         elif "середній лінія" in elements:
             middle_line = float(elements["середній лінія"])
             return round((middle_line * 2), 2)
+        elif "радіус вписаний коло" in elements:
+            inscribed_radius = float(elements["радіус вписаний коло"])
+            return round((inscribed_radius * 6) / pow(3, 0.5), 2)
+        elif "радіус описаний коло" in elements:
+            unscribed_radius = float(elements["радіус описаний коло"])
+            return round((unscribed_radius * pow(3, 0.5)), 2)
 
     def calculate(self, tasks, elements):
         side_given = "сторона" in elements
