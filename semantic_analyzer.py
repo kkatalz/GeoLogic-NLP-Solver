@@ -27,7 +27,13 @@ class SemanticAnalyzer:
 
         return task
 
-    def find_side(self, elements):
+    def find_side(self, elements, triangle_name):
+        for key, value in elements.items():
+            # Check if the key matches any part of the triangle name
+            if triangle_name and (key.startswith(triangle_name[0]) or key.endswith(triangle_name[2])):
+                triangle_base_part = value
+                return float(triangle_base_part) * 2
+
         if "периметр" in elements:
             perimeter = float(elements["периметр"])
             return round(perimeter / 3, 2)
@@ -53,14 +59,19 @@ class SemanticAnalyzer:
             unscribed_radius = float(elements["радіус описаний коло"])
             return round((unscribed_radius * pow(3, 0.5)), 2)
 
-    def calculate(self, tasks, elements):
+        return 0.0
+
+    def calculate(self, tasks, elements, triangle_name):
         side_given = "сторона" in elements
         results = []
 
         # Find the side if not already given
         side = float(elements.get("сторона", 0)
-                     ) if side_given else self.find_side(elements)
-        print(f"Side is given: {self.find_side(elements)}")
+                     ) if side_given else self.find_side(elements, triangle_name)
+
+        if side == 0.0 and elements:  # Check if the side could not be determined
+            return ["Error: Unable to calculate without a valid side or triangle base."]
+
         print(f"Side: {side}")
         for task in tasks:
 
