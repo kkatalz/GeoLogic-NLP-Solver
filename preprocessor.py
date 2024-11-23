@@ -32,7 +32,11 @@ class Preprocessor:
                         if tokens[k - 1] == "середній":
                             key = tokens[k-1] + " " + tokens[k]
                             break
-                    elif tokens[k].isalnum() and tokens[k] in given_elements:
+                    elif tokens[k] == "коло":
+                        key = tokens[k-2] + " " + tokens[k-1] + " " + tokens[k]
+                        break
+
+                    elif tokens[k] in given_elements:
                         key = tokens[k]
                         break
 
