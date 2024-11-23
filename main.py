@@ -12,7 +12,8 @@ def main():
         "У правильному трикутнику ABC відомо, що  радіус описаного кола дорівнює 8 см. Знайти бісектрису трикутника",
         "У правильному трикутнику ABC відомо, що його периметр дорівнює 36 см. Знайдіть радіус описаного кола правильного трикутника",
         "У правильному трикутнику сторона дорівнює 6см. Знайдіть довжину медіани, висоти, бісектриси.",
-        "У трикутнику довжина середньої лінії дорівнює 18 см. Знайдіть площу й радіус вписаного кола правильного трикутника."
+        "У трикутнику довжина середньої лінії дорівнює 18 см. Знайдіть площу й радіус вписаного кола правильного трикутника.",
+        "У трикутнику ABC проведено висоту BK до основи AC. Відомо, що KC = 6 см. Знайдіть площу трикутника ABC."
     ]
 
     preprocessor = Preprocessor()
@@ -28,6 +29,9 @@ def main():
         udpipe_result = udpipe.analyze_text(normalized_text)
         print(f"UDPipe Result: {udpipe_result}")
 
+        triangle_name = preprocessor.extract_triangle_name(udpipe_result)
+        print(f"Rectangle Name: {triangle_name}")
+
         elements = preprocessor.extract_elements(udpipe_result)
         print(f"Extracted Elements: {elements}")
 
@@ -35,7 +39,7 @@ def main():
         tasks = analyzer.extract_task(udpipe_result)
         print(f"Tasks to Solve: {tasks}")
 
-        results = analyzer.calculate(tasks, elements)
+        results = analyzer.calculate(tasks, elements, triangle_name)
         print(f"Results: {results}")
 
 
