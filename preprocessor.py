@@ -15,38 +15,41 @@ class Preprocessor:
     @staticmethod
     def extract_elements(tokens):
         given_elements = ['периметр', 'площа', 'кут', 'висота',
-                          'бісектриса', 'бісектрис', 'медіана', 'сторона', 'радіус']
+                          'бісектриса', 'бісектрис', 'медіана', 'сторона', 'радіус', 'середня']
 
         elements = {}
-        i = 0
-        while i < len(tokens):
-            token = tokens[i]
+        key = None
+        value_tokens = []
+        decimal_found = False
+
+        for i, token in enumerate(tokens):
             if token == "дорівнювати":
+                # Find the key by searching backward
                 key = None
                 for k in range(i - 1, -1, -1):  # Search backward for a valid key
-                    # Ensure the token is a valid word
-                    if tokens[k].isalnum() and tokens[k] in given_elements:
+                    print(tokens[k])
+                    if tokens[k] == "лінія":
+                        if tokens[k - 1] == "середній":
+                            key = tokens[k-1] + " " + tokens[k]
+                            break
+                    elif tokens[k].isalnum() and tokens[k] in given_elements:
                         key = tokens[k]
                         break
-                    else:
-                        break
-                        # find 'дорівнювати' and decrease 'i' until it finds the token that is in 'given_elements', and then take everything after this token till and assign to the number after 'дорівнювати'.
-                        # example: Радіус коло описаний навколо цей трикутник дорівнює. then it will be value_tokens.append(tokens[j])
-                        # add logic
 
+                # Collect value tokens after 'дорівнювати'
                 value_tokens = []
                 decimal_found = False
-
                 for j in range(i + 1, len(tokens)):
                     if tokens[j].isdigit():
                         value_tokens.append(tokens[j])
                     elif tokens[j] == "." and not decimal_found:
                         value_tokens.append(tokens[j])
                         decimal_found = True
+                    else:
+                        break  # Stop if an invalid token is found
 
+                # If a valid key and value are found, add to elements
                 if key and value_tokens:
-                    # Combine tokens into a single value
                     elements[key] = "".join(value_tokens)
-                i += len(value_tokens)  # Skip processed value tokens
-            i += 1
+
         return elements
