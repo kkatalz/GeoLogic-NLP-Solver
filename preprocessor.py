@@ -7,10 +7,19 @@ class Preprocessor:
 
         raw_text_lower = raw_text.lower()
         text = raw_text_lower.replace("–", "дорівнює")
+        text = raw_text_lower.replace("=", "дорівнює")
         text = text.replace("см", " cm")
         text = text.replace(",", ".")
         text = text.replace("обчисліть", "знайдіть")
         return text
+
+    @staticmethod
+    def extract_triangle_name(tokens):
+        for i, token in enumerate(tokens):
+            if i > 0 and tokens[i - 1] == "трикутник":
+                if len(token) == 3 and token.isalpha():
+                    return token
+        return None
 
     @staticmethod
     def extract_elements(tokens):
@@ -27,7 +36,6 @@ class Preprocessor:
                 # Find the key by searching backward
                 key = None
                 for k in range(i - 1, -1, -1):  # Search backward for a valid key
-                    print(tokens[k])
                     if tokens[k] == "лінія":
                         if tokens[k - 1] == "середній":
                             key = tokens[k-1] + " " + tokens[k]
@@ -36,7 +44,7 @@ class Preprocessor:
                         key = tokens[k-2] + " " + tokens[k-1] + " " + tokens[k]
                         break
 
-                    elif tokens[k] in given_elements:
+                    elif tokens[k].isalnum():
                         key = tokens[k]
                         break
 
