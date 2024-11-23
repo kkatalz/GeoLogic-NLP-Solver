@@ -14,10 +14,9 @@ class Preprocessor:
 
     @staticmethod
     def extract_elements(tokens):
-        """
-        Extract key elements like numbers, units, and geometric terms.
-        Handles multi-token values like '4√3'.
-        """
+        given_elements = ['периметр', 'площа', 'кут', 'висота',
+                          'бісектриса', 'бісектрис', 'медіана', 'сторона', 'радіус']
+
         elements = {}
         i = 0
         while i < len(tokens):
@@ -25,9 +24,15 @@ class Preprocessor:
             if token == "дорівнювати":
                 key = None
                 for k in range(i - 1, -1, -1):  # Search backward for a valid key
-                    if tokens[k].isalnum():  # Ensure the token is a valid word
+                    # Ensure the token is a valid word
+                    if tokens[k].isalnum() and tokens[k] in given_elements:
                         key = tokens[k]
                         break
+                    else:
+                        break
+                        # find 'дорівнювати' and decrease 'i' until it finds the token that is in 'given_elements', and then take everything after this token till and assign to the number after 'дорівнювати'.
+                        # example: Радіус коло описаний навколо цей трикутник дорівнює. then it will be value_tokens.append(tokens[j])
+                        # add logic
 
                 value_tokens = []
                 decimal_found = False
@@ -38,8 +43,6 @@ class Preprocessor:
                     elif tokens[j] == "." and not decimal_found:
                         value_tokens.append(tokens[j])
                         decimal_found = True
-                    else:
-                        break
 
                 if key and value_tokens:
                     # Combine tokens into a single value
