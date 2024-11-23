@@ -5,19 +5,23 @@ class SemanticAnalyzer:
 
     def extract_task(self, udpipe_result):
         find_list = ["периметр", "площа", "кут",
-                     "висота", "бісектриса", "бісектрис", "медіана", "сторона", "радіус"]
+                     "висота", "бісектриса", "бісектрис", "медіана", "сторона", "радіус", "середня"]
         task = []
         start_checking = False
 
-        for i in range(len(udpipe_result)):
-            if udpipe_result[i] == "знайти":
+        for i, word in enumerate(udpipe_result):
+            if word == "знайти":
                 start_checking = True  # Start checking words after this
                 continue
-            elif udpipe_result[i] == "радіус":
+            # Ensure no index out of range
+            elif word == "радіус" and i + 2 < len(udpipe_result):
                 task.append(
-                    udpipe_result[i] + " " + udpipe_result[i+1] + " " + udpipe_result[i+2])
-            elif start_checking and udpipe_result[i] in find_list:
-                task.append(udpipe_result[i])
+                    f"{word} {udpipe_result[i+1]} {udpipe_result[i+2]}")
+            elif word == "середня" and i + 2 < len(udpipe_result):
+                task.append(
+                    f"{word} {udpipe_result[i+1]}")
+            elif start_checking and word in find_list:
+                task.append(word)
 
         return task
 
@@ -37,6 +41,9 @@ class SemanticAnalyzer:
         elif "медіана" in elements:
             median = float(elements["медіана"])
             return round((median * 2) / pow(3, 0.5), 2)
+        elif "середній лінія" in elements:
+            middle_line = float(elements["середній лінія"])
+            return round((middle_line * 2), 2)
 
     def calculate(self, tasks, elements):
         side_given = "сторона" in elements
