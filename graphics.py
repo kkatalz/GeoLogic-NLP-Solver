@@ -36,6 +36,39 @@ def draw_triangle(given, to_solve, triangle_name, results, side_length=5):
     for label, (x, y) in vertices.items():
         ax.text(x, y, label, fontsize=12, ha='center', va='bottom')
 
+    def draw_side_label(point1, point2, value, align='center'):
+        mid_x = (point1[0] + point2[0]) / 2
+        mid_y = (point1[1] + point2[1]) / 2
+
+    # Adjust alignment and position based on alignment parameter
+        if align == 'left':
+            ax.text(mid_x - 0.2, mid_y + 0.2, value, fontsize=10,
+                    color='blue', ha='right')  # Left alignment
+        elif align == 'right':
+            ax.text(mid_x + 0.2, mid_y + 0.2, value, fontsize=10,
+                    color='blue', ha='left')   # Right alignment
+        else:
+            ax.text(mid_x, mid_y + 0.2, value, fontsize=10, color='blue',
+                    ha='center')       # Center alignment (default)
+
+
+    # fmt: off
+
+    # Add side length based on 'Сторона'
+    if 'Сторона' in given:
+        side_info = given['Сторона']
+        if side_info.isdigit() or side_info.replace('.', '', 1).isdigit():  # Default case
+            draw_side_label(vertices[triangle_name[0]], vertices[triangle_name[2]], f"{side_info.strip('.')}", align='left')
+        else:  # Specific side case (e.g., "Сторона AB")
+            parts = side_info.split()
+            if len(parts) == 2 and parts[1] in ['AB', 'BC', 'AC']:
+                if parts[1] == 'AB':
+                    draw_side_label(vertices[triangle_name[0]], vertices[triangle_name[1]], f"{parts[0].strip('.')}")
+                elif parts[1] == 'BC':
+                    draw_side_label(vertices[triangle_name[1]], vertices[triangle_name[2]], f"{parts[0].strip('.')}")
+                elif parts[1] == 'AC':
+                    draw_side_label(vertices[triangle_name[0]], vertices[triangle_name[2]], f"{parts[0].strip('.')}")
+
     def draw_angle_arc(center, start_angle, end_angle, radius, text, offset):
         arc = patches.Arc(center, radius, radius, angle=0,
                           theta1=start_angle, theta2=end_angle, color="blue", lw=1.5)
@@ -84,7 +117,7 @@ def draw_triangle(given, to_solve, triangle_name, results, side_length=5):
     ax.axis('off')
 
     # Add details below the plot without a box
-    given_text = f"Дано:\nТрикутник - {triangle_name}\n Усі кути:60" + \
+    given_text = f"Дано:\nТрикутник - {triangle_name}\n Усі кути:60\n" + \
         "\n".join([f"{k}: {v}" for k, v in given.items()])
 
     to_solve_text = f"\n\nЗнайти:\n" + \

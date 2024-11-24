@@ -37,16 +37,20 @@ def main():
         print(f"Rectangle Name: {triangle_name}")
 
         elements = preprocessor.extract_elements(udpipe_result)
-        print(f"Extracted Elements: {elements}")
+        show_elements = {key.capitalize(): value for key,
+                         value in elements.items()}
+        print(f"Extracted Elements: {show_elements}")
 
         analyzer = SemanticAnalyzer(udpipe_result)
         tasks = analyzer.extract_task(udpipe_result)
-        print(f"Tasks to Solve: {tasks}")
+        show_tasks = [task.capitalize() for task in tasks]
+        print(f"Tasks to Solve: {show_tasks}")
 
         results = analyzer.calculate(tasks, elements, triangle_name)
-        print(f"Results: {results}")
+        show_results = [results.capitalize() for results in results]
+        print(f"Results: {show_results}")
 
-    draw_triangle(elements, tasks, triangle_name, results)
+    draw_triangle(show_elements, show_tasks, triangle_name, show_results)
 
 
 if __name__ == "__main__":
