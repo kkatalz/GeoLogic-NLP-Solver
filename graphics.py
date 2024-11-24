@@ -84,7 +84,7 @@ def draw_triangle(given, to_solve, triangle_name, results, side_length=5):
     draw_angle_arc(vertices[triangle_name[2]], 240,
                    300, 1, "60°", (0, 0.4))  # Angle at C
 
-    if any("середній лінія" in task.lower() or "середня лінія" in task.lower() for task in to_solve):
+    if any("середній лінія" in task.lower() for task in to_solve):
         # Calculate midpoints of two sides
         midpoint_bm = ((vertices[triangle_name[1]][0] + vertices[triangle_name[2]][0]) / 2,
                       (vertices[triangle_name[1]][1] + vertices[triangle_name[2]][1]) / 2)
@@ -100,7 +100,7 @@ def draw_triangle(given, to_solve, triangle_name, results, side_length=5):
 
         # Annotate points L and K
         for task in to_solve:
-            if "середній лінія" in task.lower() or "середня лінія" in task.lower():
+            if "середній лінія" in task.lower():
                 # Extract L and K from the task text
                 if "lk" in task.lower():
                     ax.text(midpoint_bm[0], midpoint_bm[1] - 0.2, "L",
