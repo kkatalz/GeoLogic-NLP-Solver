@@ -114,6 +114,39 @@ def draw_triangle(given, to_solve, triangle_name, results, side_length=5):
         ax.text(mid_x, mid_y + 0.2, '?', fontsize=12,
                 color='red', ha='center')
 
+    elif any("середній лінія" in key.lower() for key in given.keys()):
+    # Find the key in 'given' that contains the middle line information
+        middle_line_key = next(key for key in given.keys() if "середній лінія" in key.lower())
+
+        # Extract the points for the middle line, e.g., "MN" from "Середня лінія MN"
+        points_label = [word for word in middle_line_key.split() if len(word) == 2 and word.isalpha()][0]
+        start_point_label, end_point_label = points_label[0], points_label[1]
+
+        # Calculate midpoints of two sides
+        midpoint_start = ((vertices[triangle_name[1]][0] + vertices[triangle_name[2]][0]) / 2,
+                          (vertices[triangle_name[1]][1] + vertices[triangle_name[2]][1]) / 2)
+        midpoint_end = ((vertices[triangle_name[2]][0] + vertices[triangle_name[0]][0]) / 2,
+                        (vertices[triangle_name[2]][1] + vertices[triangle_name[0]][1]) / 2)
+
+        # Draw the middle line
+        ax.plot(
+            [midpoint_start[0], midpoint_end[0]],
+            [midpoint_start[1], midpoint_end[1]],
+            color='orange', linestyle='--'
+        )
+
+        # Annotate the points
+        ax.text(midpoint_start[0], midpoint_start[1] - 0.2, start_point_label,
+                fontsize=12, ha='center', color='purple')
+        ax.text(midpoint_end[0], midpoint_end[1] - 0.2, end_point_label,
+                fontsize=12, ha='center', color='purple')
+
+        # Add the given length of the middle line as a label
+        middle_line_length = given[middle_line_key]
+        mid_x = (midpoint_start[0] + midpoint_end[0]) / 2
+        mid_y = (midpoint_start[1] + midpoint_end[1]) / 2
+        ax.text(mid_x, mid_y + 0.2, f"{middle_line_length}", fontsize=12, color='red', ha='center')
+
     if any("висот" in task.lower() for task in to_solve):
         # Draw height (perpendicular) from vertex C to side AB
         midpoint = ((vertices[triangle_name[0]][0] + vertices[triangle_name[1]][0]) / 2,
