@@ -36,20 +36,21 @@ def draw_triangle(given, to_solve, triangle_name, results, side_length=5):
     for label, (x, y) in vertices.items():
         ax.text(x, y, label, fontsize=12, ha='center', va='bottom')
 
-    def draw_side_label(point1, point2, value, align='center'):
+    def draw_side_label(point1, point2, value, align='center', offset=0.2):
         mid_x = (point1[0] + point2[0]) / 2
         mid_y = (point1[1] + point2[1]) / 2
 
-    # Adjust alignment and position based on alignment parameter
-        if align == 'left':
-            ax.text(mid_x - 0.2, mid_y + 0.2, value, fontsize=10,
-                    color='blue', ha='right')  # Left alignment
-        elif align == 'right':
-            ax.text(mid_x + 0.2, mid_y + 0.2, value, fontsize=10,
-                    color='blue', ha='left')   # Right alignment
-        else:
-            ax.text(mid_x, mid_y + 0.2, value, fontsize=10, color='blue',
-                    ha='center')       # Center alignment (default)
+        # Adjust alignment and position based on alignment parameter
+        ax.text(mid_x - 4 * offset, mid_y - 4 * offset, value,
+                fontsize=10, color='blue', ha=align)
+
+    # Add side labels for AK if given
+    if 'AK' in given and given['AK'].lower() != 'not given':
+        A = vertices[triangle_name[0]]  # Point A
+        C = vertices[triangle_name[2]]  # Point C
+        mid_x = (A[0] + C[0]) / 2
+        mid_y = (A[1] + C[1]) / 2
+        draw_side_label(A, C, given['AK'], align='center', offset=0.2)
 
 
     # fmt: off
@@ -147,9 +148,7 @@ def draw_triangle(given, to_solve, triangle_name, results, side_length=5):
         mid_y = (midpoint_start[1] + midpoint_end[1]) / 2
         ax.text(mid_x, mid_y + 0.2, f"{middle_line_length}", fontsize=12, color='red', ha='center')
 
-    print("NOT HERE")
     if any("висот" in task.lower() for task in to_solve):
-        print("HERERERERER")
         # Draw height (perpendicular) from vertex C to side AB
         midpoint = ((vertices[triangle_name[0]][0] + vertices[triangle_name[1]][0]) / 2,
                     (vertices[triangle_name[0]][1] + vertices[triangle_name[1]][1]) / 2)
@@ -158,7 +157,6 @@ def draw_triangle(given, to_solve, triangle_name, results, side_length=5):
 
 
     elif any("висот" in key.lower() for key in given.keys()):
-        print("IS HERE")
     # Find the key in 'given' that contains the height information
         height_key = next(key for key in given.keys() if "висот" in key.lower())
 
@@ -188,7 +186,7 @@ def draw_triangle(given, to_solve, triangle_name, results, side_length=5):
     ax.axis('off')
 
     # Add details below the plot without a box
-    given_text = f"Дано:\nТрикутник - {triangle_name}\n Усі кути:60\n" + \
+    given_text = f"Дано:\nТрикутник - {triangle_name}\nУсі кути:60\n" + \
         "\n".join([f"{k}: {v}" for k, v in given.items()])
 
     to_solve_text = f"\n\nЗнайти:\n" + \
