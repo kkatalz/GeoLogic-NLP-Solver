@@ -16,7 +16,7 @@ def main():
         # "У трикутнику довжина середньої лінії MN дорівнює 18 см. Знайдіть площу й радіус вписаного кола правильного трикутника.",
         # "У трикутнику ABC проведено висоту BK до основи AC. Відомо, що ak = 6 см. Знайдіть площу трикутника ABC.",
         "У трикутнику BNM площа = 32 см. Обчисліть середню лінію LK трикутника BNM."
-    ]   
+    ]
 
     preprocessor = Preprocessor()
     udpipe = UDPipeAnalyzer()
@@ -46,7 +46,7 @@ def main():
         results = analyzer.calculate(tasks, elements, triangle_name)
         print(f"Results: {results}")
 
-    draw_triangle(elements, tasks, triangle_name)
+    draw_triangle(elements, tasks, triangle_name, results)
 
 
 if __name__ == "__main__":
