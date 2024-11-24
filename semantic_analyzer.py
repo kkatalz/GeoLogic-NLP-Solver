@@ -20,8 +20,9 @@ class SemanticAnalyzer:
                     task.append(
                         f"{word} {udpipe_result[i+1]} {udpipe_result[i+2]}")
                 # Check bounds
-                elif word == "середній" and i + 1 < len(udpipe_result):
-                    task.append(f"{word} {udpipe_result[i+1]}")
+                elif word == "середній" and i + 2 < len(udpipe_result):
+                    task.append(
+                        f"{word} {udpipe_result[i+1]} {udpipe_result[i+2]}")
                 elif word in find_list:
                     task.append(word)
 
@@ -107,7 +108,7 @@ class SemanticAnalyzer:
             elif task == "радіус описаний коло":
                 result = round((pow(3, 0.5) * side) / 3, 2)
                 results.append(f"{task}: {result}")
-            elif task == "середній лінія":
+            elif task.startswith("середній лінія"):
                 result = round(side / 2, 2)
                 results.append(f"{task}: {result}")
 
