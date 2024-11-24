@@ -22,21 +22,32 @@ class SemanticAnalyzer:
                 # Check bounds
                 elif word == "середній" and i + 2 < len(udpipe_result):
                     task.append(
-                        f"{word} {udpipe_result[i+1]} {udpipe_result[i+2]}")
+                        f"{word} {udpipe_result[i+1]} {udpipe_result[i+2].upper()}")
+                elif word in find_list and len(udpipe_result[i+1]) == 2:
+                    task.append(f"{word} {udpipe_result[i+1].upper()}")
                 elif word in find_list:
                     task.append(word)
 
         return task
 
     def find_side(self, elements, triangle_name):
+        # all keys in elements to lowercase
+        elements = {key.lower(): value for key, value in elements.items()}
         for key, value in elements.items():
+            try:
+                value = float(value)  # Ensure the value is converted to float
+            except ValueError:
+                raise TypeError(f"Value for {key} is not numeric: {value}")
+
             # Check if the key matches any part of the triangle name
             if triangle_name and (key.startswith(triangle_name[0]) and key.endswith(triangle_name[2])):
-                triangle_base_part = value
-                return float(triangle_base_part)
+                return value
             elif triangle_name and (key.startswith(triangle_name[0]) or key.endswith(triangle_name[2])):
-                triangle_base_part = value
-                return float(triangle_base_part) * 2
+                return value * 2
+            elif key.startswith("висота") or key.startswith("бісектриса") or key.startswith("бісектрис") or key.startswith("медіана"):
+                return round((value * 2) / pow(3, 0.5), 2)
+            elif key.startswith("середній лінія"):
+                return round(value * 2, 2)
 
         if "периметр" in elements:
             perimeter = float(elements["периметр"])
@@ -44,21 +55,7 @@ class SemanticAnalyzer:
         elif "площа" in elements:
             area = float(elements["площа"])
             return round(pow((area * 4) / pow(3, 0.5), 0.5), 2)
-        elif "висота" in elements:
-            height = float(elements["висота"])
-            return round((height * 2) / pow(3, 0.5), 2)
-        elif "бісектриса" in elements:
-            bisector = float(elements["бісектриса"])
-            return round((bisector * 2) / pow(3, 0.5), 2)
-        elif "бісектрис" in elements:
-            bisector = float(elements["бісектрис"])
-            return round((bisector * 2) / pow(3, 0.5), 2)
-        elif "медіана" in elements:
-            median = float(elements["медіана"])
-            return round((median * 2) / pow(3, 0.5), 2)
-        elif "середній лінія" in elements:
-            middle_line = float(elements["середній лінія"])
-            return round((middle_line * 2), 2)
+
         elif "радіус вписаний коло" in elements:
             inscribed_radius = float(elements["радіус вписаний коло"])
             return round((inscribed_radius * 6) / pow(3, 0.5), 2)
@@ -99,7 +96,7 @@ class SemanticAnalyzer:
             elif task == "angles":
                 results.append(f"{task}: 180")
 
-            elif task in ["висота", "бісектриса", "бісектрис", "медіана"]:
+            elif any(task.startswith(prefix) for prefix in ["висота", "бісектриса", "бісектрис", "медіана"]):
                 result = round((pow(3, 0.5) * side) / 2, 2)
                 results.append(f"{task}: {result}")
             elif task == "радіус вписаний коло":
