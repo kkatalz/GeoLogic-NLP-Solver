@@ -79,4 +79,9 @@ class Preprocessor:
                 if key and value_tokens:
                     elements[key] = "".join(value_tokens)
 
+            elif tokens[i] == "висота":
+                print("CHECK")
+                key = tokens[i] + " " + tokens[i+1].upper()
+                elements[key] = "Not given"
+
         return elements
