@@ -121,6 +121,24 @@ def draw_triangle(given, to_solve, triangle_name, results, side_length=5):
 
         draw_perpendicular(ax, vertices[triangle_name[2]], midpoint, triangle_name[2], 'H')
 
+    elif any("висот" in key.lower() for key in given.keys()):
+    # Find the key in 'given' that contains the height information
+        height_key = next(key for key in given.keys() if "висот" in key.lower())
+
+        # Extract the height label, e.g., "bk" from the key "Висота bk"
+        height_label = [word for word in height_key.split() if len(word) == 2 and word.isalpha()][0].lower()
+        top_point_label = height_label[0].upper()  # First letter of the height label (e.g., "b" -> "B")
+        bottom_point_label = height_label[1].upper()  # Second letter of the height label (e.g., "k" -> "K")
+
+        # Dynamically calculate midpoint if bottom point is not a vertex (e.g., "K")
+        if bottom_point_label == "K":  # Place K at the midpoint of AC
+            midpoint = ((vertices[triangle_name[0]][0] + vertices[triangle_name[2]][0]) / 2,
+                        (vertices[triangle_name[0]][1] + vertices[triangle_name[2]][1]) / 2)
+            draw_perpendicular(ax, vertices[top_point_label], midpoint, top_point_label, bottom_point_label)
+        else:
+            # If bottom_point_label is a vertex, use its coordinates directly
+            draw_perpendicular(ax, vertices[top_point_label], vertices[bottom_point_label], top_point_label, bottom_point_label)
+
     # Turn off axes
     ax.axis('off')
 
