@@ -5,7 +5,7 @@ class SemanticAnalyzer:
 
     def extract_task(self, udpipe_result):
         find_list = ["периметр", "площа", "кут", "висота",
-                     "бісектриса", "медіана", "сторона", "радіус", "середній"]
+                     "бісектриса", "бісектрис", "медіана", "сторона", "радіус", "середній"]
         task = []
         start_checking = False
 
@@ -48,6 +48,9 @@ class SemanticAnalyzer:
             return round((height * 2) / pow(3, 0.5), 2)
         elif "бісектриса" in elements:
             bisector = float(elements["бісектриса"])
+            return round((bisector * 2) / pow(3, 0.5), 2)
+        elif "бісектрис" in elements:
+            bisector = float(elements["бісектрис"])
             return round((bisector * 2) / pow(3, 0.5), 2)
         elif "медіана" in elements:
             median = float(elements["медіана"])
