@@ -18,7 +18,6 @@ class UDPipeAnalyzer:
         response = requests.post(self.api_url, data=params)
 
         if response.status_code == 200:
-            print("TEST WORK")
             # Parse the UDPipe result
             result_text = response.json().get('result', '')
             base_forms = self._extract_base_forms(result_text)
