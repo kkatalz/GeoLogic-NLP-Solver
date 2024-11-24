@@ -36,31 +36,25 @@ class Preprocessor:
                 # Find the key by searching backward
                 key = None
                 for k in range(i - 1, -1, -1):  # Search backward for a valid key
-                    print("STRAT DEBUG")
                     # for середній лінія
                     if tokens[k].isalnum() and len(tokens[k]) == 2 and tokens[k-1] == "лінія":
-                        print("0")
                         # fmt: off
                         key = f"{tokens[k - 2]} {tokens[k - 1]} {tokens[k].upper()}"
                         # fmt: on
                         break
 
                     elif tokens[k] == "коло":
-                        print("1")
                         key = tokens[k-2] + " " + tokens[k-1] + " " + tokens[k]
                         break
 
                     # for just
                     elif tokens[k].isalnum() and len(tokens[k]) > 5:
-                        print("2")
                         key = tokens[k]
                         break
                     elif tokens[k].isalnum() and len(tokens[k]) == 2 and len(tokens[k-1]) >= 6:
-                        print("3")
                         key = tokens[k - 1] + " " + tokens[k].upper()
                         break
                     else:
-                        print("4")
                         key = tokens[k].upper()
                         break
 
@@ -79,8 +73,7 @@ class Preprocessor:
                 if key and value_tokens:
                     elements[key] = "".join(value_tokens)
 
-            elif tokens[i] == "висота":
-                print("CHECK")
+            elif tokens[i] == "висота" and len(tokens[i+1]) == 2:
                 key = tokens[i] + " " + tokens[i+1].upper()
                 elements[key] = "Not given"
 
