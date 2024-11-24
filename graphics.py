@@ -84,32 +84,33 @@ def draw_triangle(given, to_solve, triangle_name, results, side_length=5):
     draw_angle_arc(vertices[triangle_name[2]], 240,
                    300, 1, "60°", (0, 0.4))  # Angle at C
 
-   # Depict specific lines if required
-    if any("середній лінія" in task for task in to_solve):
-        midpoint_ac = ((vertices[triangle_name[0]][0] + vertices[triangle_name[2]][0]) / 2,
-                       (vertices[triangle_name[0]][1] + vertices[triangle_name[2]][1]) / 2)
-        midpoint_bc = ((vertices[triangle_name[1]][0] + vertices[triangle_name[2]][0]) / 2,
-                       (vertices[triangle_name[1]][1] + vertices[triangle_name[2]][1]) / 2)
+    if any("середній лінія" in task.lower() or "середня лінія" in task.lower() for task in to_solve):
+        # Calculate midpoints of two sides
+        midpoint_bm = ((vertices[triangle_name[1]][0] + vertices[triangle_name[2]][0]) / 2,
+                      (vertices[triangle_name[1]][1] + vertices[triangle_name[2]][1]) / 2)
+        midpoint_nm = ((vertices[triangle_name[2]][0] + vertices[triangle_name[0]][0]) / 2,
+                      (vertices[triangle_name[2]][1] + vertices[triangle_name[0]][1]) / 2)
 
+        # Draw the middle line
         ax.plot(
-            [midpoint_ac[0], midpoint_bc[0]],
-            [midpoint_ac[1], midpoint_bc[1]],
+            [midpoint_bm[0], midpoint_nm[0]],
+            [midpoint_bm[1], midpoint_nm[1]],
             color='orange', linestyle='--'
         )
 
         # Annotate points L and K
         for task in to_solve:
-            if "середній лінія" in task:
-                parts = task.split()
-                if len(parts) > 2:
-                    ax.text(midpoint_ac[0], midpoint_ac[1] - 0.2, parts[2][0].upper(),
-                            fontsize=12, ha='center', color='purple')
-                    ax.text(midpoint_bc[0], midpoint_bc[1] - 0.2, parts[2][1].upper(),
-                            fontsize=12, ha='center', color='purple')
+            if "середній лінія" in task.lower() or "середня лінія" in task.lower():
+                # Extract L and K from the task text
+                if "lk" in task.lower():
+                    ax.text(midpoint_bm[0], midpoint_bm[1] - 0.2, "L",
+                           fontsize=12, ha='center', color='purple')
+                    ax.text(midpoint_nm[0], midpoint_nm[1] - 0.2, "K",
+                           fontsize=12, ha='center', color='purple')
 
         # Add '?' over the line
-        mid_x = (midpoint_ac[0] + midpoint_bc[0]) / 2
-        mid_y = (midpoint_ac[1] + midpoint_bc[1]) / 2
+        mid_x = (midpoint_bm[0] + midpoint_nm[0]) / 2
+        mid_y = (midpoint_bm[1] + midpoint_nm[1]) / 2
         ax.text(mid_x, mid_y + 0.2, '?', fontsize=12,
                 color='red', ha='center')
 
