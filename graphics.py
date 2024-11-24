@@ -114,6 +114,13 @@ def draw_triangle(given, to_solve, triangle_name, results, side_length=5):
         ax.text(mid_x, mid_y + 0.2, '?', fontsize=12,
                 color='red', ha='center')
 
+    if any("висот" in task.lower() for task in to_solve):
+        # Draw height (perpendicular) from vertex C to side AB
+        midpoint = ((vertices[triangle_name[0]][0] + vertices[triangle_name[1]][0]) / 2,
+                    (vertices[triangle_name[0]][1] + vertices[triangle_name[1]][1]) / 2)
+
+        draw_perpendicular(ax, vertices[triangle_name[2]], midpoint, triangle_name[2], 'H')
+
     # Turn off axes
     ax.axis('off')
 
@@ -143,26 +150,29 @@ def draw_line(point1, point2, color='blue'):
     plt.plot(x_values, y_values, color=color, linestyle='-', marker='o')
 
 
-def draw_perpendicular(name, base_line, color='red'):
-    base_p1, base_p2 = base_line
-    lower_point, high_point = name[0], name[1]
+def draw_perpendicular(ax, top_point, bottom_point, top_label, bottom_label, color='red'):
+    ax.plot([top_point[0], bottom_point[0]], [top_point[1], bottom_point[1]],
+            color=color, linestyle='--', marker='')
 
-    h_x = (base_p1[0] + base_p2[0]) / 2
-    h_y = base_p1[1]
-    h_point = (h_x, h_y)
+    # Add a right angle symbol higher along the perpendicular
+    right_angle_size = 0.2
+    angle_vertex = (
+        bottom_point[0],  # Keep x-coordinate of the base
+        bottom_point[1] + (top_point[1] - bottom_point[1]) * 0.05  # Move y-coordinate higher
+    )
+    dx = right_angle_size  
+    dy = right_angle_size * (1 if top_point[0] > bottom_point[0] else -1)
 
-    base_length = np.sqrt(
-        (base_p2[0] - base_p1[0])**2 + (base_p2[1] - base_p1[1])**2)
+    ax.plot([angle_vertex[0], angle_vertex[0] + dx, angle_vertex[0] + dx],
+            [angle_vertex[1], angle_vertex[1], angle_vertex[1] + dy],
+            color=color, linewidth=1)
 
-    c_point = (h_x, h_y + base_length / 2)
+    # Label the points
+    ax.text(bottom_point[0], bottom_point[1] - 0.2, bottom_label,
+            fontsize=12, ha='center', va='top', color=color)
 
-    plt.plot([h_point[0], c_point[0]], [h_point[1], c_point[1]],
-             color=color, linestyle='-', marker='o')
+    # Add '?' near the middle of the perpendicular line
+    mid_x = (top_point[0] + bottom_point[0]) / 2
+    mid_y = (top_point[1] + bottom_point[1]) / 2
+    ax.text(mid_x + 0.2, mid_y, '?', fontsize=12, color='red', ha='left', va='center')
 
-    plt.scatter(h_point[0], h_point[1], color='orange', label=high_point)
-    plt.scatter(c_point[0], c_point[1], color='purple', label=lower_point)
-
-    plt.text(h_point[0], h_point[1] - 0.1, high_point,
-             fontsize=12, ha='center', va='top')
-    plt.text(c_point[0], c_point[1], lower_point,
-             fontsize=12, ha='left', va='bottom')
