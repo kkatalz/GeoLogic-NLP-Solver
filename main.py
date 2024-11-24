@@ -12,14 +12,13 @@ def main():
         # "У правильному трикутнику ABC відомо, що висота BK дорівнює 12 . Знайти радіус вписаного кола",
         # "У правильному трикутнику ABC відомо, що його периметр дорівнює 36 . Знайдіть радіус описаного кола правильного трикутника",
         # "У трикутнику BNM площа = 32. Обчисліть середню лінію LK трикутника BNM .",
-
-        "У трикутнику довжина середньої лінії MN дорівнює 18. Знайдіть площу й радіус вписаного кола правильного трикутника.",
+        # "У трикутнику довжина середньої лінії MN дорівнює 18. Знайдіть площу й радіус вписаного кола правильного трикутника.",
 
 
         # "У правильному трикутнику ABC відомо, що  радіус описаного кола дорівнює 8 . Знайти бісектрису AN трикутника",
         # "У правильному трикутнику ABC сторона дорівнює 6. Знайдіть довжину медіани, висоти, бісектриси.",
 
-        # "У трикутнику ABC проведено висоту BK до основи AC. Відомо, що AK = 6 . Знайдіть площу трикутника ABC.",
+        "У трикутнику ABC проведено висоту BK до основи AC. Відомо, що AK = 6 . Знайдіть площу трикутника ABC.",
 
     ]
 
@@ -39,16 +38,14 @@ def main():
         triangle_name = preprocessor.extract_triangle_name(udpipe_result)
         if triangle_name is None:
             triangle_name = "ABC"
-        print(f"Rectangle Name: {triangle_name}")
+        show_triangle_name = triangle_name.upper()
+        print(f"Rectangle Name: {show_triangle_name}")
 
         elements = preprocessor.extract_elements(udpipe_result)
         show_elements = {
             " ".join([part.upper() if len(part) == 2 else part for part in key.split()]): value
             for key, value in elements.items()
         }
-
-        # show_elements = {key.capitalize(): value for key,
-        #                  value in elements.items()}
         print(f"Extracted Elements: {show_elements}")
 
         analyzer = SemanticAnalyzer(udpipe_result)
