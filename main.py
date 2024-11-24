@@ -13,12 +13,12 @@ def main():
         # "У правильному трикутнику ABC відомо, що його периметр дорівнює 36 . Знайдіть радіус описаного кола правильного трикутника",
         # "У трикутнику BNM площа = 32. Обчисліть середню лінію LK трикутника BNM .",
         # "У трикутнику довжина середньої лінії MN дорівнює 18. Знайдіть площу й радіус вписаного кола правильного трикутника.",
+        # "У трикутнику ABC проведено висоту BK до основи AC. Відомо, що AK = 6 . Знайдіть площу трикутника ABC.",
 
 
-        # "У правильному трикутнику ABC відомо, що  радіус описаного кола дорівнює 8 . Знайти бісектрису AN трикутника",
+        "У правильному трикутнику ABC відомо, що радіус описаного кола дорівнює 8 . Знайти бісектрису CN трикутника",
         # "У правильному трикутнику ABC сторона дорівнює 6. Знайдіть довжину медіани, висоти, бісектриси.",
 
-        "У трикутнику ABC проведено висоту BK до основи AC. Відомо, що AK = 6 . Знайдіть площу трикутника ABC.",
 
     ]
 
@@ -50,7 +50,16 @@ def main():
 
         analyzer = SemanticAnalyzer(udpipe_result)
         tasks = analyzer.extract_task(udpipe_result)
-        show_tasks = [task.capitalize() for task in tasks]
+
+        show_tasks = []
+        for task in tasks:
+            words = task.split()
+            processed_words = [
+                word.upper() if len(word) == 2 and word.isalpha() else word.capitalize()
+                for word in words
+            ]
+            show_tasks.append(' '.join(processed_words))
+
         print(f"Tasks to Solve: {show_tasks}")
 
         results = analyzer.calculate(tasks, elements, triangle_name)
