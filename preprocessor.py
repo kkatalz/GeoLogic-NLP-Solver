@@ -71,7 +71,6 @@ class Preprocessor:
                     if tokens[j].isdigit():
                         value_tokens.append(tokens[j])
                     elif tokens[j] == "." and not decimal_found:
-                        value_tokens.append(tokens[j])
                         decimal_found = True
                     else:
                         break  # Stop if an invalid token is found
