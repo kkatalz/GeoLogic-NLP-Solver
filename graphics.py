@@ -147,14 +147,18 @@ def draw_triangle(given, to_solve, triangle_name, results, side_length=5):
         mid_y = (midpoint_start[1] + midpoint_end[1]) / 2
         ax.text(mid_x, mid_y + 0.2, f"{middle_line_length}", fontsize=12, color='red', ha='center')
 
+    print("NOT HERE")
     if any("висот" in task.lower() for task in to_solve):
+        print("HERERERERER")
         # Draw height (perpendicular) from vertex C to side AB
         midpoint = ((vertices[triangle_name[0]][0] + vertices[triangle_name[1]][0]) / 2,
                     (vertices[triangle_name[0]][1] + vertices[triangle_name[1]][1]) / 2)
 
         draw_perpendicular(ax, vertices[triangle_name[2]], midpoint, triangle_name[2], 'H')
 
+
     elif any("висот" in key.lower() for key in given.keys()):
+        print("IS HERE")
     # Find the key in 'given' that contains the height information
         height_key = next(key for key in given.keys() if "висот" in key.lower())
 
@@ -233,10 +237,12 @@ def draw_perpendicular(ax, top_point, bottom_point, top_label, bottom_label, col
     # Add '?' near the middle of the perpendicular line
     mid_x = (top_point[0] + bottom_point[0]) / 2
     mid_y = (top_point[1] + bottom_point[1]) / 2
-    if height_value:
+    if height_value and height_value.lower() != "not given":
+        mid_x = (top_point[0] + bottom_point[0]) / 2
+        mid_y = (top_point[1] + bottom_point[1]) / 2
         ax.text(mid_x + 0.2, mid_y, f"{height_value}", fontsize=12, color='red', ha='left')
-    else:
-        ax.text(mid_x + 0.2, mid_y, '?', fontsize=12, color='red', ha='left', va='center')
+    # else:
+    #     ax.text(mid_x + 0.2, mid_y, '?', fontsize=12, color='red', ha='left', va='center')
 
 def draw_inscribed_circle(ax, vertices, triangle_name):
     """Draws the inscribed circle of the triangle using its vertices."""
