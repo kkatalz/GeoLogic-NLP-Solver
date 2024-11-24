@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-def draw_triangle(given, to_solve, triangle_name=None, side_length=10):
+def draw_triangle(given, to_solve, triangle_name=None, side_length=7):
     # Determine triangle vertices based on name or default to ABC
     if triangle_name is None:
         triangle_name = 'ABC'
@@ -17,7 +17,7 @@ def draw_triangle(given, to_solve, triangle_name=None, side_length=10):
     }
 
     # Plot triangle
-    plt.figure(figsize=(8, 8))
+    plt.figure(figsize=(4, 4))  # Smaller screen size and smaller figure
     plt.plot(
         [vertices[triangle_name[0]][0], vertices[triangle_name[1]][0],
             vertices[triangle_name[2]][0], vertices[triangle_name[0]][0]],
@@ -28,7 +28,8 @@ def draw_triangle(given, to_solve, triangle_name=None, side_length=10):
 
     # Annotate vertices
     for label, (x, y) in vertices.items():
-        plt.text(x, y, label, fontsize=12, ha='center', va='bottom')
+        plt.text(x, y, label, fontsize=10, ha='center',
+                 va='bottom')  # Smaller font size
 
     # Depict specific lines if required
     if any("середній лінія" in task for task in to_solve):
@@ -48,30 +49,23 @@ def draw_triangle(given, to_solve, triangle_name=None, side_length=10):
             if "середній лінія" in task:
                 parts = task.split()
                 if len(parts) > 2:  # Ensure valid task structure
-                    plt.text(midpoint_ac[0], midpoint_ac[1] - 0.1, parts[2][0].upper(),
-                             fontsize=12, ha='center', color='purple')
-                    plt.text(midpoint_bc[0], midpoint_bc[1] - 0.1, parts[2][1].upper(),
-                             fontsize=12, ha='center', color='purple')
+                    plt.text(midpoint_ac[0], midpoint_ac[1] - 0.2, parts[2][0].upper(),
+                             fontsize=10, ha='center', color='purple')
+                    plt.text(midpoint_bc[0], midpoint_bc[1] - 0.2, parts[2][1].upper(),
+                             fontsize=10, ha='center', color='purple')
 
         # Add '?' over the line
         mid_x = (midpoint_ac[0] + midpoint_bc[0]) / 2
         mid_y = (midpoint_ac[1] + midpoint_bc[1]) / 2
-        plt.text(mid_x, mid_y + 0.2, '?', fontsize=14,
+        plt.text(mid_x, mid_y + 0.2, '?', fontsize=10,
                  color='red', ha='center')
 
-    # Add title
-    plt.title('Triangle Visualization')
-    plt.gca().set_aspect('equal', adjustable='box')
-    plt.grid(True)
-
     # Add details below the plot
-    # Add details below the plot
-    given_text = f"Given: {', '.join([f'{k}: {v}' for k, v in given.items()])}"
-    to_solve_text = f"To Solve: {', '.join(to_solve)}"
-    plt.figtext(0.5, -0.05, given_text, wrap=True,
-                horizontalalignment='center', fontsize=12, color='green')
-    plt.figtext(0.5, -0.1, to_solve_text, wrap=True,
-                horizontalalignment='center', fontsize=12, color='red')
+    given_text = f"Дано:\nТрикутник - {triangle_name}\n" + \
+        "\n".join([f"{k}: {v}" for k, v in given.items()])
+    to_solve_text = f"Знайти:\n" + "\n".join(to_solve)
+    plt.figtext(0.5, -0.1, given_text + "\n" + to_solve_text, wrap=True,  # Centered below
+                horizontalalignment='center', fontsize=8, color='black')
 
     plt.show()
 
