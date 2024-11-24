@@ -6,7 +6,7 @@ class Preprocessor:
     def normalize_text(raw_text):
 
         raw_text_lower = raw_text.lower()
-        text = raw_text_lower.replace("–", "дорівнює")
+        text = raw_text_lower.replace("-", "дорівнює")
         text = raw_text_lower.replace("=", "дорівнює")
         text = text.replace("см", " cm")
         text = text.replace(",", ".")

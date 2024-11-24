@@ -104,5 +104,8 @@ class SemanticAnalyzer:
             elif task == "радіус описаний коло":
                 result = round((pow(3, 0.5) * side) / 3, 2)
                 results.append(f"{task}: {result}")
+            elif task == "середній лінія":
+                result = round(side / 2, 2)
+                results.append(f"{task}: {result}")
 
         return results if results else ["No valid tasks found."]
