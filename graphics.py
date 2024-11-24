@@ -115,7 +115,7 @@ def draw_triangle(given, to_solve, triangle_name, results, side_length=5):
         ax.text(mid_x, mid_y + 0.2, '?', fontsize=12,
                 color='red', ha='center')
 
-    elif any("середній лінія" in key.lower() for key in given.keys()):
+    if any("середній лінія" in key.lower() for key in given.keys()):
     # Find the key in 'given' that contains the middle line information
         middle_line_key = next(key for key in given.keys() if "середній лінія" in key.lower())
 
@@ -156,7 +156,7 @@ def draw_triangle(given, to_solve, triangle_name, results, side_length=5):
         draw_perpendicular(ax, vertices[triangle_name[2]], midpoint, triangle_name[2], 'H')
 
 
-    elif any("висот" in key.lower() for key in given.keys()):
+    if any("висот" in key.lower() for key in given.keys()):
     # Find the key in 'given' that contains the height information
         height_key = next(key for key in given.keys() if "висот" in key.lower())
 
@@ -176,10 +176,57 @@ def draw_triangle(given, to_solve, triangle_name, results, side_length=5):
             draw_perpendicular(ax, vertices[top_point_label], vertices[bottom_point_label], top_point_label,
                                bottom_point_label, height_value=given[height_key])
 
+    if any("бісектриса" in task.lower() for task in to_solve):
+    # Extract the bisector points dynamically from the task
+        for task in to_solve:
+            if "бісектриса" in task.lower():
+                # Extract the bisector label (e.g., "AN" from "бісектриса AN")
+                bisector_label = [word for word in task.split() if len(word) == 2 and word.isalpha()][0]
+                top_point_label = bisector_label[0].upper()  # First letter is the top point (e.g., "A")
+                bottom_point_label = bisector_label[1].upper()  # Second letter is the bottom point (e.g., "N")
+
+                intersect_point = None
+                intersect_label = bottom_point_label
+
+                # Dynamically calculate the bottom point (intersection) if it's not a triangle vertex
+                if bottom_point_label not in vertices:
+                    # Calculate the intersection point dynamically (e.g., midpoint of the opposite side)
+                    if top_point_label == triangle_name[0]:  # A bisector to BC
+                        intersect_point = (
+                            (vertices[triangle_name[1]][0] + vertices[triangle_name[2]][0]) / 2,
+                            (vertices[triangle_name[1]][1] + vertices[triangle_name[2]][1]) / 2
+                        )
+                    elif top_point_label == triangle_name[1]:  # B bisector to AC
+                        intersect_point = (
+                            (vertices[triangle_name[0]][0] + vertices[triangle_name[2]][0]) / 2,
+                            (vertices[triangle_name[0]][1] + vertices[triangle_name[2]][1]) / 2
+                        )
+                    elif top_point_label == triangle_name[2]:  # C bisector to AB
+                        intersect_point = (
+                            (vertices[triangle_name[0]][0] + vertices[triangle_name[1]][0]) / 2,
+                            (vertices[triangle_name[0]][1] + vertices[triangle_name[1]][1]) / 2
+                        )
+                    intersect_label = bottom_point_label
+                else:
+                    # Use the exact bottom point if it is explicitly provided in the triangle
+                    intersect_point = vertices[bottom_point_label]
+                    intersect_label = bottom_point_label
+
+                # Draw the bisector
+                draw_bisector(ax, vertices[top_point_label], intersect_point, top_point_label, intersect_label)
+
+
+
     if any("вписаний коло" in task.lower() for task in to_solve):
         draw_inscribed_circle(ax, vertices, triangle_name)
 
-    elif any("описаний коло" in task.lower() for task in to_solve):
+    if any("описаний коло" in task.lower() for task in to_solve):
+        draw_circumscribed_circle(ax, vertices, triangle_name)
+
+    if any("вписаний коло" in key.lower() for key in given.keys()):
+        draw_inscribed_circle(ax, vertices, triangle_name)
+
+    if any("описаний коло" in key.lower() for key in given.keys()):
         draw_circumscribed_circle(ax, vertices, triangle_name)
 
     # Turn off axes
@@ -209,6 +256,25 @@ def draw_line(point1, point2, color='blue'):
     x_values = [point1[0], point2[0]]
     y_values = [point1[1], point2[1]]
     plt.plot(x_values, y_values, color=color, linestyle='-', marker='o')
+
+def draw_bisector(ax, top_point, intersect_point, top_label, intersect_label, color='purple', bisector_value=None):
+    ax.plot(
+        [top_point[0], intersect_point[0]],
+        [top_point[1], intersect_point[1]],
+        color=color, linestyle='--', marker=''
+            )
+
+    # Label the points
+    ax.text(intersect_point[0], intersect_point[1] - 0.2, intersect_label,
+            fontsize=12, ha='center', va='top', color=color)
+
+    # Add a label or '?' near the middle of the bisector
+    mid_x = (top_point[0] + intersect_point[0]) / 2
+    mid_y = (top_point[1] + intersect_point[1]) / 2
+    if bisector_value:
+        ax.text(mid_x + 0.2, mid_y, f"{bisector_value}", fontsize=12, color=color, ha='left')
+    else:
+        ax.text(mid_x + 0.2, mid_y, '?', fontsize=12, color=color, ha='left', va='center')
 
 
 def draw_perpendicular(ax, top_point, bottom_point, top_label, bottom_label, color='red', height_value=None):
