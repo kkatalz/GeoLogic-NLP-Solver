@@ -30,7 +30,10 @@ class SemanticAnalyzer:
     def find_side(self, elements, triangle_name):
         for key, value in elements.items():
             # Check if the key matches any part of the triangle name
-            if triangle_name and (key.startswith(triangle_name[0]) or key.endswith(triangle_name[2])):
+            if triangle_name and (key.startswith(triangle_name[0]) and key.endswith(triangle_name[2])):
+                triangle_base_part = value
+                return float(triangle_base_part)
+            elif triangle_name and (key.startswith(triangle_name[0]) or key.endswith(triangle_name[2])):
                 triangle_base_part = value
                 return float(triangle_base_part) * 2
 
