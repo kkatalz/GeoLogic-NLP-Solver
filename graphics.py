@@ -134,10 +134,18 @@ def draw_triangle(given, to_solve, triangle_name, results, side_length=5):
         if bottom_point_label == "K":  # Place K at the midpoint of AC
             midpoint = ((vertices[triangle_name[0]][0] + vertices[triangle_name[2]][0]) / 2,
                         (vertices[triangle_name[0]][1] + vertices[triangle_name[2]][1]) / 2)
-            draw_perpendicular(ax, vertices[top_point_label], midpoint, top_point_label, bottom_point_label)
+            draw_perpendicular(ax, vertices[top_point_label], midpoint, top_point_label, bottom_point_label,
+                               height_value=given[height_key])
         else:
             # If bottom_point_label is a vertex, use its coordinates directly
-            draw_perpendicular(ax, vertices[top_point_label], vertices[bottom_point_label], top_point_label, bottom_point_label)
+            draw_perpendicular(ax, vertices[top_point_label], vertices[bottom_point_label], top_point_label,
+                               bottom_point_label, height_value=given[height_key])
+
+    if any("вписаний коло" in task.lower() for task in to_solve):
+        draw_inscribed_circle(ax, vertices, triangle_name)
+
+    elif any("описаний коло" in task.lower() for task in to_solve):
+        draw_circumscribed_circle(ax, vertices, triangle_name)
 
     # Turn off axes
     ax.axis('off')
@@ -168,7 +176,7 @@ def draw_line(point1, point2, color='blue'):
     plt.plot(x_values, y_values, color=color, linestyle='-', marker='o')
 
 
-def draw_perpendicular(ax, top_point, bottom_point, top_label, bottom_label, color='red'):
+def draw_perpendicular(ax, top_point, bottom_point, top_label, bottom_label, color='red', height_value=None):
     ax.plot([top_point[0], bottom_point[0]], [top_point[1], bottom_point[1]],
             color=color, linestyle='--', marker='')
 
@@ -192,5 +200,62 @@ def draw_perpendicular(ax, top_point, bottom_point, top_label, bottom_label, col
     # Add '?' near the middle of the perpendicular line
     mid_x = (top_point[0] + bottom_point[0]) / 2
     mid_y = (top_point[1] + bottom_point[1]) / 2
-    ax.text(mid_x + 0.2, mid_y, '?', fontsize=12, color='red', ha='left', va='center')
+    if height_value:
+        ax.text(mid_x + 0.2, mid_y, f"{height_value}", fontsize=12, color='red', ha='left')
+    else:
+        ax.text(mid_x + 0.2, mid_y, '?', fontsize=12, color='red', ha='left', va='center')
 
+def draw_inscribed_circle(ax, vertices, triangle_name):
+    """Draws the inscribed circle of the triangle using its vertices."""
+    A = vertices[triangle_name[0]]
+    B = vertices[triangle_name[1]]
+    C = vertices[triangle_name[2]]
+
+    # Calculate side lengths
+    a = np.linalg.norm(np.array(B) - np.array(C))
+    b = np.linalg.norm(np.array(A) - np.array(C))
+    c = np.linalg.norm(np.array(A) - np.array(B))
+    perimeter = a + b + c
+
+    # Incenter coordinates
+    incenter_x = (a * A[0] + b * B[0] + c * C[0]) / perimeter
+    incenter_y = (a * A[1] + b * B[1] + c * C[1]) / perimeter
+
+    # Radius of the inscribed circle
+    area = 0.5 * abs(
+        A[0] * (B[1] - C[1]) + B[0] * (C[1] - A[1]) + C[0] * (A[1] - B[1])
+    )
+    radius = area / (0.5 * perimeter)
+
+    # Draw the inscribed circle
+    circle = patches.Circle((incenter_x, incenter_y), radius, edgecolor='green', fill=False, linewidth=1.5, linestyle='--')
+    ax.add_patch(circle)
+
+    # Annotate the incenter
+    ax.text(incenter_x, incenter_y, 'r', fontsize=12, ha='center', va='center', color='green')
+
+
+def draw_circumscribed_circle(ax, vertices, triangle_name):
+    """Draws the circumscribed circle of the triangle using its vertices."""
+    A = vertices[triangle_name[0]]
+    B = vertices[triangle_name[1]]
+    C = vertices[triangle_name[2]]
+
+    # Calculate the circumcenter (intersection of perpendicular bisectors)
+    D = 2 * (A[0] * (B[1] - C[1]) + B[0] * (C[1] - A[1]) + C[0] * (A[1] - B[1]))
+    ux = ((A[0]**2 + A[1]**2) * (B[1] - C[1]) +
+          (B[0]**2 + B[1]**2) * (C[1] - A[1]) +
+          (C[0]**2 + C[1]**2) * (A[1] - B[1])) / D
+    uy = ((A[0]**2 + A[1]**2) * (C[0] - B[0]) +
+          (B[0]**2 + B[1]**2) * (A[0] - C[0]) +
+          (C[0]**2 + C[1]**2) * (B[0] - A[0])) / D
+
+    # Radius of the circumscribed circle
+    radius = np.linalg.norm(np.array([ux, uy]) - np.array(A))
+
+    # Draw the circumscribed circle
+    circle = patches.Circle((ux, uy), radius, edgecolor='blue', fill=False, linewidth=1.5, linestyle='--')
+    ax.add_patch(circle)
+
+    # Annotate the circumcenter
+    ax.text(ux, uy, 'O', fontsize=12, ha='center', va='center', color='blue')
