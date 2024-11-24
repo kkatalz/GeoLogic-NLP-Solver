@@ -36,16 +36,32 @@ class Preprocessor:
                 # Find the key by searching backward
                 key = None
                 for k in range(i - 1, -1, -1):  # Search backward for a valid key
-                    if tokens[k] == "лінія":
-                        if tokens[k - 1] == "середній":
-                            key = tokens[k-1] + " " + tokens[k]
-                            break
+                    print("STRAT DEBUG")
+                    # for середній лінія
+                    if tokens[k].isalnum() and len(tokens[k]) == 2 and tokens[k-1] == "лінія":
+                        print("0")
+                        # fmt: off
+                        key = f"{tokens[k - 2]} {tokens[k - 1]} {tokens[k].upper()}"
+                        # fmt: on
+                        break
+
                     elif tokens[k] == "коло":
+                        print("1")
                         key = tokens[k-2] + " " + tokens[k-1] + " " + tokens[k]
                         break
 
-                    elif tokens[k].isalnum():
+                    # for just
+                    elif tokens[k].isalnum() and len(tokens[k]) > 5:
+                        print("2")
                         key = tokens[k]
+                        break
+                    elif tokens[k].isalnum() and len(tokens[k]) == 2 and len(tokens[k-1]) >= 6:
+                        print("3")
+                        key = tokens[k - 1] + " " + tokens[k].upper()
+                        break
+                    else:
+                        print("4")
+                        key = tokens[k].upper()
                         break
 
                 # Collect value tokens after 'дорівнювати'
