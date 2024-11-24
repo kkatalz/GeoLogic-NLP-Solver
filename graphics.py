@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import matplotlib.patches as patches
 
 
 def draw_triangle(given, to_solve, triangle_name, results, side_length=5):
@@ -35,7 +36,22 @@ def draw_triangle(given, to_solve, triangle_name, results, side_length=5):
     for label, (x, y) in vertices.items():
         ax.text(x, y, label, fontsize=12, ha='center', va='bottom')
 
-    # Depict specific lines if required
+    def draw_angle_arc(center, start_angle, end_angle, radius, text, offset):
+        arc = patches.Arc(center, radius, radius, angle=0,
+                          theta1=start_angle, theta2=end_angle, color="blue", lw=1.5)
+        ax.add_patch(arc)
+        ax.text(center[0] + offset[0], center[1] + offset[1],
+                text, fontsize=10, color='blue', ha='center')
+
+    # Angles for A, B, and C
+    draw_angle_arc(vertices[triangle_name[0]], 0, 60,
+                   1, "60°", (-0.4, 0.4))  # Angle at A
+    draw_angle_arc(vertices[triangle_name[1]], 120, 180,
+                   1, "60°", (0.4, 0.4))  # Angle at B
+    draw_angle_arc(vertices[triangle_name[2]], 240,
+                   300, 1, "60°", (0, 0.4))  # Angle at C
+
+   # Depict specific lines if required
     if any("середній лінія" in task for task in to_solve):
         midpoint_ac = ((vertices[triangle_name[0]][0] + vertices[triangle_name[2]][0]) / 2,
                        (vertices[triangle_name[0]][1] + vertices[triangle_name[2]][1]) / 2)
@@ -68,7 +84,7 @@ def draw_triangle(given, to_solve, triangle_name, results, side_length=5):
     ax.axis('off')
 
     # Add details below the plot without a box
-    given_text = f"Дано:\nТрикутник - {triangle_name}\n" + \
+    given_text = f"Дано:\nТрикутник - {triangle_name}\n Усі кути:60" + \
         "\n".join([f"{k}: {v}" for k, v in given.items()])
 
     to_solve_text = f"\n\nЗнайти:\n" + \
