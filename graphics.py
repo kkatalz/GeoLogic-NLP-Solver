@@ -2,46 +2,77 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-def draw_triangle(given, to_solve, side_length=10):
-    # Calculate vertices of the equilateral triangle
+def draw_triangle(given, to_solve, triangle_name=None, side_length=10):
+    # Determine triangle vertices based on name or default to ABC
+    if triangle_name is None:
+        triangle_name = 'ABC'
+    else:
+        triangle_name = triangle_name.upper()
+
     height = (np.sqrt(3) / 2) * side_length
     vertices = {
-        'A': (0, 0),
-        'B': (side_length, 0),
-        'C': (side_length / 2, height)
+        triangle_name[0]: (0, 0),
+        triangle_name[1]: (side_length, 0),
+        triangle_name[2]: (side_length / 2, height)
     }
 
     # Plot triangle
     plt.figure(figsize=(8, 8))
     plt.plot(
-        [vertices['A'][0], vertices['B'][0], vertices['C'][0], vertices['A'][0]],
-        [vertices['A'][1], vertices['B'][1], vertices['C'][1], vertices['A'][1]],
-        color='blue', linestyle='-', marker='o', label='Triangle'
+        [vertices[triangle_name[0]][0], vertices[triangle_name[1]][0],
+            vertices[triangle_name[2]][0], vertices[triangle_name[0]][0]],
+        [vertices[triangle_name[0]][1], vertices[triangle_name[1]][1],
+            vertices[triangle_name[2]][1], vertices[triangle_name[0]][1]],
+        color='blue', linestyle='-', marker='o'
     )
 
     # Annotate vertices
     for label, (x, y) in vertices.items():
         plt.text(x, y, label, fontsize=12, ha='center', va='bottom')
 
-    # Add given elements
-    for key, value in given.items():
-        plt.text(
-            vertices['C'][0], vertices['C'][1] + 1.5, f"{key}: {value}",
-            fontsize=10, color='green', ha='center'
+    # Depict specific lines if required
+    if any("середній лінія" in task for task in to_solve):
+        midpoint_ac = ((vertices[triangle_name[0]][0] + vertices[triangle_name[2]][0]) / 2,
+                       (vertices[triangle_name[0]][1] + vertices[triangle_name[2]][1]) / 2)
+        midpoint_bc = ((vertices[triangle_name[1]][0] + vertices[triangle_name[2]][0]) / 2,
+                       (vertices[triangle_name[1]][1] + vertices[triangle_name[2]][1]) / 2)
+
+        plt.plot(
+            [midpoint_ac[0], midpoint_bc[0]],
+            [midpoint_ac[1], midpoint_bc[1]],
+            color='orange', linestyle='--'
         )
 
-    # Add unknowns to solve
-    for key in to_solve:
-        plt.text(
-            vertices['C'][0], vertices['C'][1] - 1.5, f"{key}: ?",
-            fontsize=10, color='red', ha='center'
-        )
+        # Annotate points L and K using keys
+        for task in to_solve:
+            if "середній лінія" in task:
+                parts = task.split()
+                if len(parts) > 2:  # Ensure valid task structure
+                    plt.text(midpoint_ac[0], midpoint_ac[1] - 0.1, parts[2][0].upper(),
+                             fontsize=12, ha='center', color='purple')
+                    plt.text(midpoint_bc[0], midpoint_bc[1] - 0.1, parts[2][1].upper(),
+                             fontsize=12, ha='center', color='purple')
 
-    # Add legend
-    plt.legend(['Triangle', 'Given', 'To Solve'], loc='upper right')
+        # Add '?' over the line
+        mid_x = (midpoint_ac[0] + midpoint_bc[0]) / 2
+        mid_y = (midpoint_ac[1] + midpoint_bc[1]) / 2
+        plt.text(mid_x, mid_y + 0.2, '?', fontsize=14,
+                 color='red', ha='center')
+
+    # Add title
     plt.title('Triangle Visualization')
     plt.gca().set_aspect('equal', adjustable='box')
     plt.grid(True)
+
+    # Add details below the plot
+    # Add details below the plot
+    given_text = f"Given: {', '.join([f'{k}: {v}' for k, v in given.items()])}"
+    to_solve_text = f"To Solve: {', '.join(to_solve)}"
+    plt.figtext(0.5, -0.05, given_text, wrap=True,
+                horizontalalignment='center', fontsize=12, color='green')
+    plt.figtext(0.5, -0.1, to_solve_text, wrap=True,
+                horizontalalignment='center', fontsize=12, color='red')
+
     plt.show()
 
 
