@@ -176,11 +176,10 @@ def draw_triangle(given, to_solve, triangle_name, results, side_length=5):
             draw_perpendicular(ax, vertices[top_point_label], vertices[bottom_point_label], top_point_label,
                                bottom_point_label, height_value=given[height_key])
 
-    if any("бісектриса" in task.lower() for task in to_solve):
+    if any("бісектрис" in task.lower() for task in to_solve) or any("медіан" in task.lower() for task in to_solve):
     # Extract the bisector points dynamically from the task
         for task in to_solve:
-            if "бісектриса" in task.lower():
-                # Extract the bisector label (e.g., "AN" from "бісектриса AN")
+            if "бісектрис" in task.lower() or "медіан" in task.lower():
                 bisector_label = [word for word in task.split() if len(word) == 2 and word.isalpha()][0]
                 top_point_label = bisector_label[0].upper()  # First letter is the top point (e.g., "A")
                 bottom_point_label = bisector_label[1].upper()  # Second letter is the bottom point (e.g., "N")
