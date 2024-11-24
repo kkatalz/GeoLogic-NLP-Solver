@@ -31,13 +31,16 @@ class SemanticAnalyzer:
         return task
 
     def find_side(self, elements, triangle_name):
-        # all keys in elements to lowercase
+        # Convert all keys in elements to lowercase
         elements = {key.lower(): value for key, value in elements.items()}
+
         for key, value in elements.items():
             try:
-                value = float(value)  # Ensure the value is converted to float
+                # Try converting the value to float
+                value = float(value)
             except ValueError:
-                raise TypeError(f"Value for {key} is not numeric: {value}")
+                # Skip the current key if the value is not numeric
+                continue
 
             # Check if the key matches any part of the triangle name
             if triangle_name and (key.startswith(triangle_name[0]) and key.endswith(triangle_name[2])):
@@ -49,20 +52,33 @@ class SemanticAnalyzer:
             elif key.startswith("середній лінія"):
                 return round(value * 2, 2)
 
+        # Handle cases based on known keys
         if "периметр" in elements:
-            perimeter = float(elements["периметр"])
-            return round(perimeter / 3, 2)
+            try:
+                perimeter = float(elements["периметр"])
+                return round(perimeter / 3, 2)
+            except ValueError:
+                pass
         elif "площа" in elements:
-            area = float(elements["площа"])
-            return round(pow((area * 4) / pow(3, 0.5), 0.5), 2)
-
+            try:
+                area = float(elements["площа"])
+                return round(pow((area * 4) / pow(3, 0.5), 0.5), 2)
+            except ValueError:
+                pass
         elif "радіус вписаний коло" in elements:
-            inscribed_radius = float(elements["радіус вписаний коло"])
-            return round((inscribed_radius * 6) / pow(3, 0.5), 2)
+            try:
+                inscribed_radius = float(elements["радіус вписаний коло"])
+                return round((inscribed_radius * 6) / pow(3, 0.5), 2)
+            except ValueError:
+                pass
         elif "радіус описаний коло" in elements:
-            unscribed_radius = float(elements["радіус описаний коло"])
-            return round((unscribed_radius * pow(3, 0.5)), 2)
+            try:
+                unscribed_radius = float(elements["радіус описаний коло"])
+                return round((unscribed_radius * pow(3, 0.5)), 2)
+            except ValueError:
+                pass
 
+        # Default return value if no valid side found
         return 0.0
 
     def calculate(self, tasks, elements, triangle_name):
