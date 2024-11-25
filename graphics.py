@@ -71,11 +71,13 @@ def draw_triangle(given, to_solve, triangle_name, results, side_length=5):
 
     # Angles for A, B, and C
     draw_angle_arc(vertices[triangle_name[0]], 0, 60,
-                   1, "60°", (-0.4, 0.4))  # Angle at A
+                   1, "60°", (-0.4, 0.4)) 
     draw_angle_arc(vertices[triangle_name[1]], 120, 180,
-                   1, "60°", (0.4, 0.4))  # Angle at B
+                   1, "60°", (0.4, 0.4))  
     draw_angle_arc(vertices[triangle_name[2]], 240,
-                   300, 1, "60°", (0, 0.4))  # Angle at C
+                   300, 1, "60°", (0, 0.4)) 
+
+
 
     if any("середній лінія" in task.lower() for task in to_solve):
         midpoint_bm = ((vertices[triangle_name[1]][0] + vertices[triangle_name[2]][0]) / 2,
@@ -196,13 +198,13 @@ def draw_triangle(given, to_solve, triangle_name, results, side_length=5):
         draw_inscribed_circle(ax, vertices, triangle_name)
 
     if any("описаний коло" in task.lower() for task in to_solve):
-        draw_circumscribed_circle(ax, vertices, triangle_name)
+        draw_circumscribed_circle(ax, vertices, triangle_name, "?")
 
     if any("вписаний коло" in key.lower() for key in given.keys()):
         draw_inscribed_circle(ax, vertices, triangle_name)
 
     if any("описаний коло" in key.lower() for key in given.keys()):
-        draw_circumscribed_circle(ax, vertices, triangle_name)
+        draw_circumscribed_circle(ax, vertices, triangle_name , "8")
 
     ax.axis('off')
 
@@ -250,6 +252,7 @@ def draw_bisector(ax, top_point, intersect_point, top_label, intersect_label, co
         ax.text(mid_x + 0.2, mid_y, '?', fontsize=12, color=color, ha='left', va='center')
 
 
+
 def draw_perpendicular(ax, top_point, bottom_point, top_label, bottom_label, color='red', height_value=None):
     ax.plot([top_point[0], bottom_point[0]], [top_point[1], bottom_point[1]],
             color=color, linestyle='--', marker='')
@@ -278,8 +281,9 @@ def draw_perpendicular(ax, top_point, bottom_point, top_label, bottom_label, col
         mid_x = (top_point[0] + bottom_point[0]) / 2
         mid_y = (top_point[1] + bottom_point[1]) / 2
         ax.text(mid_x + 0.2, mid_y, f"{height_value}", fontsize=12, color='red', ha='left')
-    # else:
-    #     ax.text(mid_x + 0.2, mid_y, '?', fontsize=12, color='red', ha='left', va='center')
+    else:
+        ax.text(mid_x + 0.2, mid_y, '?', fontsize=12, color='red', ha='left', va='center')
+
 
 def draw_inscribed_circle(ax, vertices, triangle_name):
     A = vertices[triangle_name[0]]
@@ -304,10 +308,20 @@ def draw_inscribed_circle(ax, vertices, triangle_name):
     circle = patches.Circle((incenter_x, incenter_y), radius, edgecolor='green', fill=False, linewidth=1.5, linestyle='--')
     ax.add_patch(circle)
 
+    # Draw the radius line
+    edge_point = (incenter_x + radius, incenter_y)  # Point on the edge of the circle
+    ax.plot([incenter_x, edge_point[0]], [incenter_y, edge_point[1]], color='green', linestyle='-', linewidth=1.5) 
+
+    # Add the radius value above the line
+    mid_x = (radius + edge_point[0]) / 2
+    mid_y = (radius + edge_point[1]) / 2
+    ax.text(mid_x + 0.2, mid_y, "?", fontsize=12, color='green', ha='center', va='bottom')
+
+
     ax.text(incenter_x, incenter_y, 'r', fontsize=12, ha='center', va='center', color='green')
 
 
-def draw_circumscribed_circle(ax, vertices, triangle_name):
+def draw_circumscribed_circle(ax, vertices, triangle_name, radius_value):
     A = vertices[triangle_name[0]]
     B = vertices[triangle_name[1]]
     C = vertices[triangle_name[2]]
@@ -325,5 +339,14 @@ def draw_circumscribed_circle(ax, vertices, triangle_name):
 
     circle = patches.Circle((ux, uy), radius, edgecolor='blue', fill=False, linewidth=1.5, linestyle='--')
     ax.add_patch(circle)
+
+     # Draw the radius line
+    edge_point = (ux + radius, uy)  # Point on the edge of the circle
+    ax.plot([ux, edge_point[0]], [uy, edge_point[1]], color='blue', linestyle='-', linewidth=1.5)
+
+    # Add the radius value above the line
+    mid_x = (ux + edge_point[0]) / 2
+    mid_y = (uy + edge_point[1]) / 2
+    ax.text(mid_x - 0.2, mid_y, radius_value, fontsize=12, color='blue', ha='center', va='bottom')
 
     ax.text(ux, uy, 'O', fontsize=12, ha='center', va='center', color='blue')

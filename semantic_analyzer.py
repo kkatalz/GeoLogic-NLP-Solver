@@ -53,6 +53,7 @@ class SemanticAnalyzer:
             elif key.startswith("висота") or key.startswith("бісектриса") or key.startswith("бісектрис") or key.startswith("медіана"):
                 print(
                     "Щоб знайти сторону, маючи висоту, бісектрису або медіану (l), формула: a = (l * 2 * √3) /3.")
+                print(f"Сторона = {round((value * 2) / pow(3, 0.5), 2)}")
                 return round((value * 2) / pow(3, 0.5), 2)
             elif key.startswith("середній лінія"):
                 print(
@@ -125,7 +126,7 @@ class SemanticAnalyzer:
 
             if task == "площа":
                 print(
-                    "Формула площв: S = (a^2 * √3) / 4 , a - сторона трикутника.")
+                    "Формула площі: S = (a^2 * √3) / 4 , a - сторона трикутника.")
                 print(f"S = {round((pow(side, 2) * pow(3, 0.5)) / 4, 2)} (од^2)")
 
                 result = round((pow(side, 2) * pow(3, 0.5)) / 4, 2)
@@ -148,8 +149,8 @@ class SemanticAnalyzer:
                 print(
                     "У рівносторонньому трикутнику висота, медіана та бісектриса співпадають.")
                 print(
-                    "Формула вистоти, медаіани, бісектриси: h = (a * √3) /2 , a - сторона трикутника.")
-                print(f"{task.capitalize()} = {round((pow(3, 0.5) * side) / 2, 2)}")
+                    "Формула висоти, медаіани, бісектриси: h = (a * √3) /2 , a - сторона трикутника.")
+                print(f"{task.upper()} = {round((pow(3, 0.5) * side) / 2, 2)}")
 
                 result = round((pow(3, 0.5) * side) / 2, 2)
                 results.append(f"{task}: {result}")
@@ -163,7 +164,7 @@ class SemanticAnalyzer:
 
             elif task == "радіус описаний коло":
                 print(
-                    "Формула описаного кола: R = a * √3 , a - сторона трикутника.")
+                    "Формула описаного кола: R = (a * √3) /3 , a - сторона трикутника.")
                 print(f"{task.capitalize()} = {round((pow(3, 0.5) * side) / 3, 2)}")
                 result = round((pow(3, 0.5) * side) / 3, 2)
                 results.append(f"{task}: {result}")
