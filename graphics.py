@@ -4,7 +4,6 @@ import matplotlib.patches as patches
 
 
 def draw_triangle(given, to_solve, triangle_name, results, side_length=5):
-    # Determine triangle vertices based on name or default to ABC
     if triangle_name is None:
         triangle_name = 'ABC'
     else:
@@ -17,13 +16,10 @@ def draw_triangle(given, to_solve, triangle_name, results, side_length=5):
         triangle_name[2]: (side_length / 2, height)
     }
 
-    # Create figure with adjusted size and bottom margin
     plt.figure(figsize=(4, 5))
 
-    # Create main axes for triangle with adjusted position - increased bottom position to 0.45
     ax = plt.axes([0.1, 0.45, 0.8, 0.5])
 
-    # Plot triangle
     ax.plot(
         [vertices[triangle_name[0]][0], vertices[triangle_name[1]][0],
             vertices[triangle_name[2]][0], vertices[triangle_name[0]][0]],
@@ -32,7 +28,6 @@ def draw_triangle(given, to_solve, triangle_name, results, side_length=5):
         color='blue', linestyle='-', marker='o'
     )
 
-    # Annotate vertices
     for label, (x, y) in vertices.items():
         ax.text(x, y, label, fontsize=12, ha='center', va='bottom')
 
@@ -40,14 +35,12 @@ def draw_triangle(given, to_solve, triangle_name, results, side_length=5):
         mid_x = (point1[0] + point2[0]) / 2
         mid_y = (point1[1] + point2[1]) / 2
 
-        # Adjust alignment and position based on alignment parameter
         ax.text(mid_x - 4 * offset, mid_y - 4 * offset, value,
                 fontsize=10, color='blue', ha=align)
 
-    # Add side labels for AK if given
     if 'AK' in given and given['AK'].lower() != 'not given':
-        A = vertices[triangle_name[0]]  # Point A
-        C = vertices[triangle_name[2]]  # Point C
+        A = vertices[triangle_name[0]]
+        C = vertices[triangle_name[2]]
         mid_x = (A[0] + C[0]) / 2
         mid_y = (A[1] + C[1]) / 2
         draw_side_label(A, C, given['AK'], align='center', offset=0.2)
@@ -55,7 +48,6 @@ def draw_triangle(given, to_solve, triangle_name, results, side_length=5):
 
     # fmt: off
 
-    # Add side length based on 'Сторона'
     if 'Сторона' in given:
         side_info = given['Сторона']
         if side_info.isdigit() or side_info.replace('.', '', 1).isdigit():  # Default case
@@ -86,7 +78,6 @@ def draw_triangle(given, to_solve, triangle_name, results, side_length=5):
                    300, 1, "60°", (0, 0.4))  # Angle at C
 
     if any("середній лінія" in task.lower() for task in to_solve):
-        # Calculate midpoints of two sides
         midpoint_bm = ((vertices[triangle_name[1]][0] + vertices[triangle_name[2]][0]) / 2,
                       (vertices[triangle_name[1]][1] + vertices[triangle_name[2]][1]) / 2)
         midpoint_nm = ((vertices[triangle_name[2]][0] + vertices[triangle_name[0]][0]) / 2,
@@ -116,40 +107,33 @@ def draw_triangle(given, to_solve, triangle_name, results, side_length=5):
                 color='red', ha='center')
 
     if any("середній лінія" in key.lower() for key in given.keys()):
-    # Find the key in 'given' that contains the middle line information
         middle_line_key = next(key for key in given.keys() if "середній лінія" in key.lower())
 
-        # Extract the points for the middle line, e.g., "MN" from "Середня лінія MN"
         points_label = [word for word in middle_line_key.split() if len(word) == 2 and word.isalpha()][0]
         start_point_label, end_point_label = points_label[0], points_label[1]
 
-        # Calculate midpoints of two sides
         midpoint_start = ((vertices[triangle_name[1]][0] + vertices[triangle_name[2]][0]) / 2,
                           (vertices[triangle_name[1]][1] + vertices[triangle_name[2]][1]) / 2)
         midpoint_end = ((vertices[triangle_name[2]][0] + vertices[triangle_name[0]][0]) / 2,
                         (vertices[triangle_name[2]][1] + vertices[triangle_name[0]][1]) / 2)
 
-        # Draw the middle line
         ax.plot(
             [midpoint_start[0], midpoint_end[0]],
             [midpoint_start[1], midpoint_end[1]],
             color='orange', linestyle='--'
         )
 
-        # Annotate the points
         ax.text(midpoint_start[0], midpoint_start[1] - 0.2, start_point_label,
                 fontsize=12, ha='center', color='purple')
         ax.text(midpoint_end[0], midpoint_end[1] - 0.2, end_point_label,
                 fontsize=12, ha='center', color='purple')
 
-        # Add the given length of the middle line as a label
         middle_line_length = given[middle_line_key]
         mid_x = (midpoint_start[0] + midpoint_end[0]) / 2
         mid_y = (midpoint_start[1] + midpoint_end[1]) / 2
         ax.text(mid_x, mid_y + 0.2, f"{middle_line_length}", fontsize=12, color='red', ha='center')
 
     if any("висот" in task.lower() for task in to_solve):
-        # Draw height (perpendicular) from vertex C to side AB
         midpoint = ((vertices[triangle_name[0]][0] + vertices[triangle_name[1]][0]) / 2,
                     (vertices[triangle_name[0]][1] + vertices[triangle_name[1]][1]) / 2)
 
@@ -157,27 +141,22 @@ def draw_triangle(given, to_solve, triangle_name, results, side_length=5):
 
 
     if any("висот" in key.lower() for key in given.keys()):
-    # Find the key in 'given' that contains the height information
         height_key = next(key for key in given.keys() if "висот" in key.lower())
 
-        # Extract the height label, e.g., "bk" from the key "Висота bk"
         height_label = [word for word in height_key.split() if len(word) == 2 and word.isalpha()][0].lower()
-        top_point_label = height_label[0].upper()  # First letter of the height label (e.g., "b" -> "B")
-        bottom_point_label = height_label[1].upper()  # Second letter of the height label (e.g., "k" -> "K")
+        top_point_label = height_label[0].upper()  
+        bottom_point_label = height_label[1].upper()  
 
-        # Dynamically calculate midpoint if bottom point is not a vertex (e.g., "K")
         if bottom_point_label == "K":  # Place K at the midpoint of AC
             midpoint = ((vertices[triangle_name[0]][0] + vertices[triangle_name[2]][0]) / 2,
                         (vertices[triangle_name[0]][1] + vertices[triangle_name[2]][1]) / 2)
             draw_perpendicular(ax, vertices[top_point_label], midpoint, top_point_label, bottom_point_label,
                                height_value=given[height_key])
         else:
-            # If bottom_point_label is a vertex, use its coordinates directly
             draw_perpendicular(ax, vertices[top_point_label], vertices[bottom_point_label], top_point_label,
                                bottom_point_label, height_value=given[height_key])
 
     if any("бісектрис" in task.lower() for task in to_solve) or any("медіан" in task.lower() for task in to_solve):
-    # Extract the bisector points dynamically from the task
         for task in to_solve:
             if "бісектрис" in task.lower() or "медіан" in task.lower():
                 bisector_label = [word for word in task.split() if len(word) == 2 and word.isalpha()][0]
@@ -187,9 +166,7 @@ def draw_triangle(given, to_solve, triangle_name, results, side_length=5):
                 intersect_point = None
                 intersect_label = bottom_point_label
 
-                # Dynamically calculate the bottom point (intersection) if it's not a triangle vertex
                 if bottom_point_label not in vertices:
-                    # Calculate the intersection point dynamically (e.g., midpoint of the opposite side)
                     if top_point_label == triangle_name[0]:  # A bisector to BC
                         intersect_point = (
                             (vertices[triangle_name[1]][0] + vertices[triangle_name[2]][0]) / 2,
@@ -211,7 +188,6 @@ def draw_triangle(given, to_solve, triangle_name, results, side_length=5):
                     intersect_point = vertices[bottom_point_label]
                     intersect_label = bottom_point_label
 
-                # Draw the bisector
                 draw_bisector(ax, vertices[top_point_label], intersect_point, top_point_label, intersect_label)
 
 
@@ -228,10 +204,8 @@ def draw_triangle(given, to_solve, triangle_name, results, side_length=5):
     if any("описаний коло" in key.lower() for key in given.keys()):
         draw_circumscribed_circle(ax, vertices, triangle_name)
 
-    # Turn off axes
     ax.axis('off')
 
-    # Add details below the plot without a box
     given_text = f"Дано:\nТрикутник - {triangle_name}\nУсі кути:60\n" + \
         "\n".join([f"{k}: {v}" for k, v in given.items()])
 
@@ -308,7 +282,6 @@ def draw_perpendicular(ax, top_point, bottom_point, top_label, bottom_label, col
     #     ax.text(mid_x + 0.2, mid_y, '?', fontsize=12, color='red', ha='left', va='center')
 
 def draw_inscribed_circle(ax, vertices, triangle_name):
-    """Draws the inscribed circle of the triangle using its vertices."""
     A = vertices[triangle_name[0]]
     B = vertices[triangle_name[1]]
     C = vertices[triangle_name[2]]
@@ -319,7 +292,6 @@ def draw_inscribed_circle(ax, vertices, triangle_name):
     c = np.linalg.norm(np.array(A) - np.array(B))
     perimeter = a + b + c
 
-    # Incenter coordinates
     incenter_x = (a * A[0] + b * B[0] + c * C[0]) / perimeter
     incenter_y = (a * A[1] + b * B[1] + c * C[1]) / perimeter
 
@@ -329,16 +301,13 @@ def draw_inscribed_circle(ax, vertices, triangle_name):
     )
     radius = area / (0.5 * perimeter)
 
-    # Draw the inscribed circle
     circle = patches.Circle((incenter_x, incenter_y), radius, edgecolor='green', fill=False, linewidth=1.5, linestyle='--')
     ax.add_patch(circle)
 
-    # Annotate the incenter
     ax.text(incenter_x, incenter_y, 'r', fontsize=12, ha='center', va='center', color='green')
 
 
 def draw_circumscribed_circle(ax, vertices, triangle_name):
-    """Draws the circumscribed circle of the triangle using its vertices."""
     A = vertices[triangle_name[0]]
     B = vertices[triangle_name[1]]
     C = vertices[triangle_name[2]]
@@ -352,12 +321,9 @@ def draw_circumscribed_circle(ax, vertices, triangle_name):
           (B[0]**2 + B[1]**2) * (A[0] - C[0]) +
           (C[0]**2 + C[1]**2) * (B[0] - A[0])) / D
 
-    # Radius of the circumscribed circle
     radius = np.linalg.norm(np.array([ux, uy]) - np.array(A))
 
-    # Draw the circumscribed circle
     circle = patches.Circle((ux, uy), radius, edgecolor='blue', fill=False, linewidth=1.5, linestyle='--')
     ax.add_patch(circle)
 
-    # Annotate the circumcenter
     ax.text(ux, uy, 'O', fontsize=12, ha='center', va='center', color='blue')
